@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeeTcheck Invulformulier - WARP Systems</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" xintegrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4HCpbSPnCBRHnbMJpjSaeNbz1QU+DYDRK9AUjAXAUpc/ToSicG1GLD2uLQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+
+    <style>
+        :root {
+            --warp-green: #43ab34;
+            --warp-dark-gray: #333333; 
+            --warp-medium-gray: #666666;
+            --warp-light-gray-bg: #f8f8f8; 
+            --warp-border-gray: #e0e0e0;
+            --warp-header-text-on-green: #000000; 
+            --warp-header-text-on-black: #e0e0e0;
+            --warp-black-header-bg: #000000;
+            --warp-white-border: #ffffff;
+            --top-header-height: 60px;
+            --bottom-header-height: 60px; 
+            --total-header-height: calc(var(--top-header-height) + var(--bottom-header-height));
+            --logo-width: 120px; 
+            --header-padding-x: 2rem; 
+            --logo-overlap: 10px; 
+            --logo-total-height: calc(var(--bottom-header-height) + 2 * var(--logo-overlap));
+            --form-warp-green: #43ab34; 
+            --form-warp-light-green: #7BC96F; 
+            --form-warp-dark-gray: #58595B; 
+            --form-warp-light-gray: #D1D2D4; 
+            --form-warp-dun: #333333; 
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif; 
+            background-color: var(--warp-light-gray-bg); 
+            color: var(--warp-dark-gray);
+            margin: 0;
+            padding-top: var(--total-header-height); 
+        }
+
+        header#warp-main-header {
+            position: fixed; 
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100; 
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            background-color: white; 
+        }
+        header#warp-main-header .header-container { max-width: 1920px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; position: relative; height: 100%; box-sizing: border-box; }
+        header#warp-main-header .top-header { background-color: var(--warp-black-header-bg); color: var(--warp-header-text-on-black); padding: 0.8rem 0; font-size: 0.8rem; min-height: var(--top-header-height); display:flex; align-items:center; }
+        header#warp-main-header .top-header .header-container { padding: 0 var(--header-padding-x); }
+        header#warp-main-header .top-header a { text-decoration: none; transition: color 0.2s ease, background-color 0.2s ease, opacity 0.2s ease; }
+        header#warp-main-header .top-header a:not(.icon-placeholder-link):not(.offerte-button-top):hover { color: #ffffff; }
+        header#warp-main-header .showroom-link { color: var(--warp-green) !important; display: flex; align-items: center; font-weight: 500; }
+        header#warp-main-header .showroom-link span { color: var(--warp-green); margin-right: 0.3rem; font-weight: 500; }
+        header#warp-main-header .showroom-link:hover { color: #3aa129 !important; }
+        header#warp-main-header .top-header-right { display: flex; align-items: center; gap: 0.75rem; }
+        header#warp-main-header .search-container input { background-color: var(--warp-black-header-bg); border: 2px solid var(--warp-white-border); color: var(--warp-white-border); padding: 0.3rem 0.5rem; padding-right: 2rem; border-radius: 8px; font-size: 0.8rem; min-height: 40px; box-sizing: border-box; height: 30px; }
+        header#warp-main-header .search-container .search-icon { position: absolute; right: 0.5rem; top: 50%; transform: translateY(-50%); color: var(--warp-white-border); cursor: pointer; }
+        header#warp-main-header .icon-placeholder-link { background-color: var(--warp-green); color: var(--warp-header-text-on-green); display: inline-flex; align-items: center; justify-content: center; padding: 0.3rem 0.6rem; border-radius: 8px; font-size: 1.1rem; line-height: 1; min-width: 40px; height: 40px; box-sizing: border-box; text-decoration: none; }
+        header#warp-main-header .icon-placeholder-link:hover { background-color: #5a9a3f; }
+        header#warp-main-header .offerte-button-top { background-color: #ffffff; color: var(--warp-green); padding: 0.3rem 0.8rem; border-radius: 8px; font-weight: 600; font-size: 0.8rem; text-decoration: none; border: 1px solid #ffffff; display: inline-flex; align-items: center; height: 40px; box-sizing: border-box; }
+        header#warp-main-header .offerte-button-top:hover { background-color: #f0f0f0; color: #3aa129; }
+        header#warp-main-header .bottom-header { background-color: var(--warp-green); color: var(--warp-header-text-on-green); position: relative; height: var(--bottom-header-height); }
+        header#warp-main-header .bottom-header .header-container { min-height: 0; height: 100%; padding-left: calc(var(--logo-width) + var(--header-padding-x) + 1rem); padding-right: var(--header-padding-x); width: 100%; }
+        header#warp-main-header #logo-container { position: absolute; width: var(--logo-width); height: var(--logo-total-height); left: var(--header-padding-x); top: calc(var(--top-header-height) - var(--logo-overlap)); z-index: 55; display: flex; align-items: center; justify-content: center; }
+        header#warp-main-header #logo-container img { display: block; height: auto; object-fit: contain; transform: scale(2); transform-origin: center; }
+        header#warp-main-header nav.centered-nav { flex-grow: 1; text-align: center; box-sizing: border-box; }
+        @media (max-width: 1024px) { header#warp-main-header nav.centered-nav { display: none; } header#warp-main-header .bottom-header .header-container { padding-left: var(--header-padding-x); padding-right: var(--header-padding-x); justify-content: flex-end; } }
+        header#warp-main-header nav.centered-nav a { color: var(--warp-header-text-on-green); text-decoration: none; margin: 0 0.8rem; transition: opacity 0.2s ease-in-out; font-size: 1rem; display: inline-block; }
+        header#warp-main-header nav.centered-nav a.main-link { font-weight: 700; }
+        header#warp-main-header nav.centered-nav a.secondary-link { font-weight: 400; }
+        header#warp-main-header nav.centered-nav a:hover { opacity: 0.7; }
+        header#warp-main-header .hamburger-menu { display: none; align-self: center; }
+        @media (max-width: 1024px) { header#warp-main-header .hamburger-menu { display: block; } }
+        header#warp-main-header .hamburger-menu button { color: var(--warp-header-text-on-green); font-size: 1.5rem; background: none; border: none; cursor: pointer; }
+
+        .speetcheck-form-page-content {
+            padding: 2rem;
+        }
+        
+        #formElementContainer {
+            max-width: 48rem; 
+            margin-left: auto; 
+            margin-right: auto; 
+            background-color: white;
+            padding: 1.5rem; 
+            border-radius: 0.5rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); 
+            font-family: 'Inter', sans-serif; 
+        }
+        @media (min-width: 640px) { 
+            #formElementContainer {
+                padding: 2.5rem; 
+            }
+        }
+
+        .section-title { color: var(--form-warp-green); border-bottom: 2px solid var(--form-warp-light-green); padding-bottom: 0.5rem; margin-bottom: 1rem; font-size: 1.5em; }
+        .form-label { font-weight: 600; color: var(--form-warp-dark-gray); margin-bottom: 0.25rem; display: block; }
+        .form-input, .form-select, .form-textarea { width: 100%; padding: 0.5rem; border: 1px solid var(--form-warp-light-gray); border-radius: 0.375rem; margin-bottom: 0.75rem; box-sizing: border-box; color: var(--form-warp-dark-gray); }
+        .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--form-warp-light-green); box-shadow: 0 0 0 2px rgba(123, 201, 111, 0.5); }
+        .checkbox-group label, .radio-group label { margin-right: 1rem; color: var(--form-warp-dark-gray); display: flex; align-items: center; margin-bottom: 0.25rem; }
+        .checkbox-group input[type="checkbox"], .radio-group input[type="radio"] { margin-right: 0.5rem; accent-color: var(--form-warp-green); }
+        .conditional-text { font-size: 0.875rem; color: var(--form-warp-dark-gray); margin-left: 0; padding-left: 1.5rem; }
+        .input-group { margin-bottom: 1rem; }
+        .input-group > div:not(.checkbox-group):not(.radio-group):not(.flex) { margin-bottom: 0.5rem; }
+        .hidden-field { display: none !important; }
+        .form-select-small { width: auto; min-width: 100px; }
+
+        .important-text {
+            font-weight: bold;
+            font-size: 1.05em; 
+        }
+
+        .signature-canvas {
+            border: 1px solid var(--form-warp-light-gray);
+            border-radius: 0.375rem;
+            cursor: crosshair;
+            touch-action: none; 
+        }
+        .signature-controls button {
+            background-color: var(--form-warp-light-green);
+            color: var(--form-warp-dun);
+            padding: 0.3rem 0.6rem;
+            border-radius: 0.375rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border: 1px solid var(--form-warp-green);
+            margin-top: 0.5rem;
+            margin-right: 0.5rem;
+        }
+        .signature-controls button:hover {
+            background-color: var(--form-warp-green);
+            color: white;
+        }
+
+        .modal { display: none; position: fixed; z-index: 1050; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); }
+        .modal-content { background-color: #fefefe; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 600px; border-radius: 0.5rem; position: relative; }
+        .modal-close { color: #aaa; position: absolute; right: 15px; top: 10px; font-size: 28px; font-weight: bold; cursor: pointer; line-height: 1; }
+        .modal-close:hover, .modal-close:focus { color: black; text-decoration: none; }
+        
+        .action-button { 
+            background-color: var(--form-warp-green); 
+            color: white; 
+            padding: 0.6rem 1.2rem; 
+            border-radius: 0.375rem; 
+            font-size: 0.9rem; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: background-color 0.2s;
+            border: 1px solid var(--form-warp-green);
+        }
+        .action-button:hover {
+            background-color: var(--form-warp-light-green);
+            color: var(--form-warp-dun);
+        }
+        
+        @media print {
+            body { margin: 0 !important; padding: 0 !important; padding-top: 0 !important; font-size: 10pt; background-color: white !important; }
+            header#warp-main-header { display: none !important; }
+            .speetcheck-form-page-content { padding: 0 !important; }
+            #formElementContainer { margin: 0.25in !important; padding: 0 !important; box-shadow: none !important; border-radius: 0 !important; max-width: 100% !important; border: none !important; }
+            .no-print, .no-print * { display: none !important; }
+            .form-input, .form-select, .form-textarea { border: 1px solid #ccc !important; background-color: #fdfdfd !important; }
+            .section-title { font-size: 1.2em; border-bottom: 1px solid var(--form-warp-light-green); }
+            .grid { display: block !important; } 
+            .grid > * { margin-bottom: 0.5rem !important; }
+            .signature-canvas { border: 1px solid #ccc !important; } 
+        }
+
+    </style>
+</head>
+<body>
+    <header id="warp-main-header">
+        <div class="top-header">
+            <div class="header-container">
+                <div>
+                    <a href="index.html" class="showroom-link mr-40"> 
+                        <span>✓</span> Maak een showroomafspraak!
+                    </a>
+                </div>
+                <div class="top-header-right">
+                    <div class="search-container hidden md:block ml-60">
+                        <input type="text" placeholder="Zoeken" class="w-46">
+                        <span class="search-icon">⌕</span>
+                    </div>
+                    <a href="#" class="icon-placeholder-link" title="Favorieten">♡</a>
+                    <a href="#" class="icon-placeholder-link" title="Winkelwagen">🛒</a>
+                    <a href="#" class="offerte-button-top">SpeeTcheck</a> 
+                </div>
+            </div>
+        </div>
+        <div class="bottom-header">
+            <div class="header-container">
+                <nav class="centered-nav">
+                    <a href="index.html#oplossingen" class="main-link">Onze oplossingen</a> 
+                    <a href="index.html#systemen" class="main-link">Systemen</a>
+                    <a href="index.html#aanleggen" class="main-link">Aanleggen</a>
+                    <a href="index.html#webshop" class="main-link">Webshop</a>
+                    <a href="index.html#zakelijk" class="main-link">WARP Zakelijk</a>
+                    <a href="index.html#downloads" class="secondary-link">Downloads</a>
+                    <a href="index.html#referenties" class="secondary-link">Referenties</a>
+                    <a href="index.html#overons" class="secondary-link">Over ons</a>
+                    <a href="index.html#werkenbij" class="secondary-link">Werken bij WARP</a>
+                </nav>
+                 <div class="hamburger-menu">
+                     <button type="button">☰</button>
+                 </div>
+            </div>
+        </div>
+         <div id="logo-container">
+             <img src="images/logo.png" alt="WARP Systems Logo" onerror="this.onerror=null;this.src='https://placehold.co/120x60/cccccc/000000?text=Logo+Error';">
+        </div>
+    </header>
+
+    <main class="speetcheck-form-page-content">
+        <div id="formElementContainer"> 
+            <header class="mb-8">
+                <div class="relative flex items-center py-4">
+                    <div class="flex-grow text-center">
+                        <h1 class="text-4xl font-bold" style="color: var(--form-warp-green);">SpeeTcheck</h1>
+                    </div>
+                    <div class="absolute top-1/2 right-0 transform -translate-y-1/2 text-right">
+                        <p class="text-xl font-semibold" style="color: var(--form-warp-green);">WARP</p>
+                        <p class="text-sm" style="color: var(--form-warp-dark-gray);">SYSTEMS</p>
+                    </div>
+                </div>
+            </header>
+
+            <form id="speetcheckForm">
+                <section id="page1" class="mb-10">
+                    <h3 class="section-title">Gegevens</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label for="klant_naam" class="form-label">Naam Klant</label>
+                            <input type="text" id="klant_naam" name="klant_naam" class="form-input">
+                            <label for="klant_adres" class="form-label mt-4">Adres Klant</label>
+                            <input type="text" id="klant_adres" name="klant_adres" class="form-input">
+                            <label for="klant_telefoon" class="form-label mt-4">Telefoonnummer Klant</label>
+                            <input type="tel" id="klant_telefoon" name="klant_telefoon" class="form-input">
+                        </div>
+                        <div>
+                            <label for="adviseur_naam" class="form-label">Naam Technisch Adviseur</label>
+                            <input type="text" id="adviseur_naam" name="adviseur_naam" class="form-input">
+                            <label for="adviseur_telefoon" class="form-label mt-4">Telefoonnummer Technisch Adviseur</label>
+                            <input type="tel" id="adviseur_telefoon" name="adviseur_telefoon" class="form-input">
+                            <label for="projectnummer" class="form-label mt-4">Projectnummer</label>
+                            <input type="text" id="projectnummer" name="projectnummer" class="form-input">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                         <div>
+                            <label for="installatiedatum" class="form-label">Installatiedatum</label>
+                            <input type="date" id="installatiedatum" name="installatiedatum" class="form-input">
+                        </div>
+                        <div>
+                            <label for="datum_locatiebezoek" class="form-label">Datum locatiebezoek</label>
+                            <input type="date" id="datum_locatiebezoek" name="datum_locatiebezoek" class="form-input">
+                        </div>
+                    </div>
+    
+                    <h3 class="section-title">Checklist WARP Systems technisch adviseur</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-4 mb-6">
+                        <div>
+                            <label class="form-label">Systeem</label>
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" name="systeem_speetile10" value="SpeeTile10 (±15mm)"> SpeeTile10 (±15mm)</label>
+                                <label><input type="checkbox" name="systeem_speetherm15" value="SpeeTherm15 (15mm)"> SpeeTherm15 (15mm)</label>
+                                <label><input type="checkbox" name="systeem_speetile12" value="SpeeTile12 (n.v.t.)"> SpeeTile12 (n.v.t.)</label>
+                                <label><input type="checkbox" name="systeem_speetherm30" value="SpeeTherm30 (30mm)"> SpeeTherm30 (30mm)</label>
+                                <label><input type="checkbox" name="systeem_evo" value="EVO"> EVO</label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label">Oppervlakte (locatie)</label>
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" name="ondervloer_type_vloer" value="Vloer"> Vloer</label>
+                                <label><input type="checkbox" name="ondervloer_type_wand" value="Wand"> Wand</label>
+                                <label><input type="checkbox" name="ondervloer_type_plafond" value="Plafond"> Plafond</label>
+                            </div>
+                        </div>
+                         <div>
+                            <label class="form-label">Ondervloer (materiaal)</label>
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" name="ondervloer_materiaal_hout" value="Hout"> Hout</label>
+                                <label><input type="checkbox" name="ondervloer_materiaal_beton" value="Beton/zandcement"> Beton/zandcement</label>
+                                <label><input type="checkbox" id="ondervloer_materiaal_isolatie_checkbox" name="ondervloer_materiaal_isolatie" value="Isolatie"> Isolatie</label>
+                                <input type="text" id="ondervloer_materiaal_isolatie_details" name="ondervloer_materiaal_isolatie_details" class="form-input mt-1 ml-6 hidden-field" placeholder="Specificatie isolatie">
+                                <label><input type="checkbox" name="ondervloer_materiaal_tegels" value="Tegels"> Tegels</label>
+                                <label><input type="checkbox" id="ondervloer_materiaal_anders_checkbox" name="ondervloer_materiaal_anders" value="Anders"> Anders</label>
+                                <input type="text" id="ondervloer_materiaal_anders_details" name="ondervloer_materiaal_anders_details" class="form-input mt-1 ml-6 hidden-field" placeholder="Specificatie 'Anders'">
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="input-group">
+                        <label class="form-label">Wordt er gebruik gemaakt van de stortservice van WARP Systems?</label>
+                        <select id="stortservice" name="stortservice" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee">Nee</option>
+                            <option value="nvt">N.V.T.</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Is er water met minimaal 1 bar druk beschikbaar voor de vulmassapomp (SpeeTile) en het vullen van de verdeler?</label>
+                        <select name="water_beschikbaar" id="water_beschikbaar" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee">Nee</option>
+                        </select>
+                        <input type="text" name="water_beschikbaar_details" id="water_beschikbaar_details" class="form-input mt-1 hidden-field" placeholder="Ja, locatie: / Nee, afspraak:">
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Is er stroom aanwezig voor het mengen van de vulmassa? (16 ampère/230 Volt)</label>
+                         <select id="stroom_aanwezig" name="stroom_aanwezig" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee">Nee</option>
+                            <option value="nvt">N.V.T.</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Is/zijn de ruimte(s) geïsoleerd?</label>
+                        <select name="ruimte_geisoleerd" id="ruimte_geisoleerd" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee">Nee</option>
+                        </select>
+                        <div id="ruimte_geisoleerd_details_container" class="mt-2 hidden-field">
+                            <label for="ruimte_geisoleerd_met" class="form-label">Ja, met:</label>
+                            <input type="text" id="ruimte_geisoleerd_met" name="ruimte_geisoleerd_met" class="form-input mb-2" placeholder="Materiaal">
+                            <label for="ruimte_geisoleerd_locatie_opp" class="form-label">Welke locatie/oppervlakte (isolatie)</label>
+                            <input type="text" id="ruimte_geisoleerd_locatie_opp" name="ruimte_geisoleerd_locatie_opp" class="form-input">
+                            <label for="ruimte_geisoleerd_energielabel" class="form-label mt-2">Energielabel</label>
+                            <input type="text" id="ruimte_geisoleerd_energielabel" name="ruimte_geisoleerd_energielabel" class="form-input" placeholder="Kies energielabel">
+                        </div>
+                    </div>
+                    <h3 class="section-title mt-6">Oppervlakte Specificaties</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label for="m2_systeem" class="form-label">Aantal m² systeem</label>
+                            <input type="number" id="m2_systeem" name="m2_systeem" class="form-input">
+                        </div>
+                        <div>
+                            <label for="m2_speetube" class="form-label">Aantal m² SpeeTube</label>
+                            <input type="number" id="m2_speetube" name="m2_speetube" class="form-input">
+                        </div>
+                        <div>
+                            <label for="m2_storten" class="form-label">Aantal m² storten</label>
+                            <input type="number" id="m2_storten" name="m2_storten" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="input-group mt-6">
+                        <label class="form-label">Is er niveauverschil in de woning en/of sprake van een opstap/verhoging?</label>
+                        <select name="niveauverschil" id="niveauverschil" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee">Nee</option>
+                        </select>
+                        <input type="text" name="niveauverschil_waar" id="niveauverschil_waar" class="form-input mt-1 hidden-field" placeholder="Ja, waar:">
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Valt de vloer binnen vlakheidsklasse 1? (NEN 2747), 2mm/m²</label>
+                        <select name="vlakheidsklasse" id="vlakheidsklasse" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja, vastgesteld aan de hand van grid meting</option>
+                            <option value="nee">Nee, risico op niet volledige dekking van het SpeeTile systeem</option>
+                        </select>
+                    </div>
+                </section>
+    
+                <section id="page2" class="mb-10">
+                    <h3 class="section-title">Locatiebezoek (Vervolg)</h3>
+                    <div class="input-group">
+                        <label class="form-label">Bevat de woning oneffenheden zoals hobbels en/of kuilen?</label>
+                         <select name="oneffenheden" id="oneffenheden" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja, risico op niet volledige dekking van het SpeeTile systeem</option>
+                            <option value="nee">Nee</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Wat is de staat van de ondervloer?</label>
+                        <div class="mb-2">
+                            <label for="staat_ondervloer_lijmresten" class="form-label text-sm">Bevat lijmresten en gipsresten?</label>
+                            <select name="staat_ondervloer_lijmresten" id="staat_ondervloer_lijmresten" class="form-select form-select-small">
+                                <option value="">Kies...</option><option value="ja">Ja</option><option value="nee">Nee</option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label for="staat_ondervloer_vet" class="form-label text-sm">Is de vloer vet?</label>
+                            <select name="staat_ondervloer_vet" id="staat_ondervloer_vet" class="form-select form-select-small">
+                                <option value="">Kies...</option><option value="ja">Ja</option><option value="nee">Nee</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="staat_ondervloer_hol" class="form-label text-sm">Klinkt de vloer hol?</label>
+                            <select name="staat_ondervloer_hol" id="staat_ondervloer_hol" class="form-select form-select-small">
+                                <option value="">Kies...</option><option value="ja">Ja</option><option value="nee">Nee</option>
+                            </select>
+                        </div>
+                        <label for="opmerkingen_vloer_hol" class="form-label text-sm mt-2">Opmerkingen:</label>
+                        <textarea id="opmerkingen_vloer_hol" name="opmerkingen_vloer_hol" rows="2" class="form-textarea"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Is de ondervloer glad? (ondervloer mag niet golven)</label>
+                        <select name="ondervloer_glad" id="ondervloer_glad" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee">Nee</option>
+                        </select>
+                        <input type="text" name="ondervloer_glad_maatregelen" id="ondervloer_glad_maatregelen" class="form-input mt-1 hidden-field" placeholder="Nee, maatregelen klant:">
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Is de ondervloer stabiel? (ter beoordeling door technisch adviseur)</label>
+                        <select name="ondervloer_stabiel" id="ondervloer_stabiel" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee">Nee</option>
+                        </select>
+                        <input type="text" name="ondervloer_stabiel_maatregelen" id="ondervloer_stabiel_maatregelen" class="form-input mt-1 hidden-field" placeholder="Nee, maatregelen klant:">
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Welke afwerking wordt over het systeem geplaatst?</label>
+                        <select id="afwerking_systeem" name="afwerking_systeem" class="form-select">
+                            <option value="">Kies een optie</option>
+                            <option value="flexibel_zwevend">Flexibel zwevend</option>
+                            <option value="stijf_zwevend">Stijf zwevend</option>
+                            <option value="flexibel_verlijmd">Flexibel verlijmd (bij SpeeTherm altijd i.c.m. Jumpax basic)</option>
+                            <option value="gietvloer">Gietvloer</option>
+                            <option value="stijf_verlijmd">Stijf verlijmd</option>
+                            <option value="onbekend">Nog onbekend</option>
+                        </select>
+                        <p class="conditional-text mt-2">LET OP! Vulmassa (SpeeTop) is ongeschikt om direct af te werken met de gekozen afwerking. De vloer dient te allen tijde gecontroleerd te worden door de applicateur op mogelijke na-egalisatie!</p>
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Wordt er naderhand een plint verwerkt?</label>
+                        <select id="plint_verwerkt" name="plint_verwerkt" class="form-select">
+                            <option value="">Kies een optie</option>
+                            <option value="nee">Nee</option>
+                            <option value="ja_wand">Ja, op de wand</option>
+                            <option value="ja_vloer">Ja, op de vloer</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Zijn de muren bij installatie al afgewerkt? (SpeeTile)</label>
+                        <select name="muren_afgewerkt" id="muren_afgewerkt" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee">Nee</option>
+                        </select>
+                        <p id="muren_afgewerkt_risico" class="conditional-text mt-1 hidden-field">Er is risico op schade door plakrand randisolatie.</p>
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Moet WARP Systems de wanden afplakken?</label>
+                         <select name="wanden_afplakken" id="wanden_afplakken" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee">Nee</option>
+                        </select>
+                        <p id="wanden_afplakken_risico" class="conditional-text mt-1 hidden-field">Er is risico op verfschade door tape.</p>
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Is er een kruipluik aanwezig in het te installeren oppervlak?</label>
+                        <select name="kruipluik_aanwezig" id="kruipluik_aanwezig" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee">Nee</option>
+                        </select>
+                        <p id="kruipluik_instructie" class="conditional-text mt-1 hidden-field">De klant dient rondom het kruipluik waterdichte latten van 3cm hoog te plaatsen en af te kitten (met acrylaatkit).</p>
+                    </div>
+                </section>
+    
+                <section id="page3" class="mb-10">
+                    <h3 class="section-title">Technische Specificaties</h3>
+                    <div class="input-group">
+                        <label class="form-label">Soort primaire warmtebron</label>
+                        <select id="warmtebron" name="warmtebron" class="form-select">
+                            <option value="">Kies een optie</option>
+                            <option value="cv_ketel">CV-Ketel</option>
+                            <option value="warmtepomp">Warmtepomp</option>
+                            <option value="hybride_warmtepomp">Hybride warmtepomp</option>
+                            <option value="toekomstige_warmtepomp">Toekomstige (hybride) warmtepomp</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="beoogde_groepslengte" class="form-label">Beoogde groepslengte</label>
+                        <input type="text" id="beoogde_groepslengte" name="beoogde_groepslengte" class="form-input">
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Is er zoneregeling van toepassing?</label>
+                        <select name="zoneregeling" id="zoneregeling" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee">Nee</option>
+                        </select>
+                        <div id="zoneregeling_aantal_zones_container" class="mt-2 hidden-field">
+                             <label for="zoneregeling_aantal_zones" class="form-label text-sm">Aantal zones</label>
+                             <input type="number" name="zoneregeling_aantal_zones" id="zoneregeling_aantal_zones" class="form-input">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                        <div>
+                            <label for="aantal_groepen" class="form-label">Aantal groepen</label>
+                            <input type="number" id="aantal_groepen" name="aantal_groepen" class="form-input">
+                        </div>
+                        <div>
+                            <label for="aantal_aansluitingen" class="form-label">Aantal aansluitingen</label>
+                            <input type="number" id="aantal_aansluitingen" name="aantal_aansluitingen" class="form-input">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                        <div>
+                            <label for="verdeler_locatie" class="form-label text-sm">Locatie verdeler</label>
+                            <input type="text" id="verdeler_locatie" name="verdeler_locatie" class="form-input">
+                        </div>
+                        <div>
+                            <label for="verdeler_lengte" class="form-label text-sm">Lengte verdeler (mm)</label>
+                            <input type="number" id="verdeler_lengte" name="verdeler_lengte" class="form-input">
+                        </div>
+                        <div>
+                            <label for="verdeler_hoogte" class="form-label text-sm">Hoogte verdeler (mm)</label>
+                            <input type="number" id="verdeler_hoogte" name="verdeler_hoogte" class="form-input">
+                        </div>
+                        <div>
+                            <label for="verdeler_diepte" class="form-label text-sm">Diepte verdeler (mm)</label>
+                            <input type="number" id="verdeler_diepte" name="verdeler_diepte" class="form-input">
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="form-label">Is de wand geschikt voor het plaatsen van de verdeler?</label>
+                        <select name="wand_geschikt_verdeler" id="wand_geschikt_verdeler" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee">Nee</option>
+                        </select>
+                        <p id="wand_geschikt_verdeler_instructie" class="conditional-text mt-1 hidden-field">Klant moet houten platen bevestigen van >18mm dik. Breedte en lengte a.d.h.v. de verdeler grootte (inclusief pompunit).</p>
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Welke diameter moet de primaire aansluiting minimaal zijn? (Let op dit is geen bindend advies)</label>
+                        <select id="diameter_aansluiting" name="diameter_aansluiting" class="form-select">
+                            <option value="">Kies een optie</option>
+                            <option value="ht_15_20_lt7">HT = 15mm staal/20mm flex (verdeler &lt;7gr)</option>
+                            <option value="lt_20_26_lt7">LT = 20mm staal/26mm flex (verdeler &lt;7gr)</option>
+                            <option value="ht_20_26_gt7">HT = 20mm staal/26mm flex (verdeler &gt;7gr)</option>
+                            <option value="lt_25_32_gt7">LT = 25mm staal/32mm flex (verdeler &gt;7gr)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Locatie primaire aansluitingen? (meerdere mogelijk)</label>
+                        <div class="checkbox-group flex flex-wrap">
+                            <label><input type="checkbox" name="locatie_primair_lb" value="lb"> LB</label>
+                            <label><input type="checkbox" name="locatie_primair_rb" value="rb"> RB</label>
+                            <label><input type="checkbox" name="locatie_primair_lo" value="lo"> LO</label>
+                            <label><input type="checkbox" name="locatie_primair_ro" value="ro"> RO</label>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Is het een kelderinstallatie?</label>
+                        <select id="kelderinstallatie" name="kelderinstallatie" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="nee">Nee</option>
+                            <option value="ja_pomp_draaien">Ja, pomp 180 graden draaien</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Moet de klant een stopcontact voorbereiden?</label>
+                        <select id="stopcontact_voorbereiden" name="stopcontact_voorbereiden" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="nee">Nee</option>
+                            <option value="ja_bij_verdeler">Ja, bij de verdeler</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Moeten er één of meerdere groepen SpeeTube door de muur/wand?</label>
+                        <select name="speetube_door_muur" id="speetube_door_muur" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee">Nee</option>
+                        </select>
+                        <input type="text" name="speetube_door_muur_details" id="speetube_door_muur_details" class="form-input mt-1 hidden-field" placeholder="Ja, klant dient doorvoer voor te bereiden:">
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Hangt de klant zelf de verdeler op?</label>
+                        <select name="klant_hangt_verdeler" id="klant_hangt_verdeler" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee">Nee</option>
+                        </select>
+                        <p id="klant_hangt_verdeler_instructie" class="conditional-text mt-1 hidden-field">De verdeler dient op minimaal 30cm hoogte (onderste punt) van de vloer opgehangen te worden.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="input-group">
+                            <label class="form-label">In welk soort woning wordt het systeem geïnstalleerd?</label>
+                            <select name="soort_woning_select" id="soort_woning_select" class="form-select"> 
+                                <option value="">Kies een optie</option>
+                                <option value="appartement">Appartement</option>
+                                <option value="woonhuis">Woonhuis</option>
+                                <option value="anders_woning">Anders</option> 
+                            </select>
+                            <input type="text" name="soort_woning_anders" id="soort_woning_anders" class="form-input mt-1 hidden-field" placeholder="Anders, specificatie:">
+                        </div>
+                        <div class="input-group">
+                            <label class="form-label">Op welke verdieping wordt het systeem geïnstalleerd? (meerdere mogelijk)</label>
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" name="verdieping_bg" value="begane_grond"> Begane grond</label>
+                                <label><input type="checkbox" name="verdieping_1e" value="eerste_verdieping"> Eerste verdieping</label>
+                                <label><input type="checkbox" name="verdieping_2e" value="tweede_verdieping"> Tweede verdieping</label>
+                                <label><input type="checkbox" id="verdieping_anders_check" name="verdieping_anders_check" value="anders"> Anders</label>
+                            </div>
+                            <input type="text" name="verdieping_installatie_anders" id="verdieping_installatie_anders" class="form-input mt-1 hidden-field" placeholder="Anders, specificatie:">
+                        </div>
+                    </div>
+                </section>
+    
+                <section id="page4" class="mb-10">
+                    <h3 class="section-title">Logistiek en Veiligheid</h3>
+                    <div class="input-group">
+                        <label class="form-label">Is er een lift aanwezig? (min. 650kg & 90x140cm)</label>
+                        <select name="lift_aanwezig" id="lift_aanwezig" class="form-select">
+                            <option value="">Kies een optie</option>
+                            <option value="nvt">N.V.T.</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee">Nee</option>
+                        </select>
+                        <input type="text" name="lift_aanwezig_afspraken" id="lift_aanwezig_afspraken" class="form-input mt-1 hidden-field" placeholder="Nee, afspraken:">
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Moet er op meer dan 1 meter hoogte worden gewerkt?</label>
+                        <select name="hoogte_werk" id="hoogte_werk" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee">Nee</option>
+                        </select>
+                        <input type="text" name="hoogte_werk_maatregelen" id="hoogte_werk_maatregelen" class="form-input mt-1 hidden-field" placeholder="Ja, maatregelen:">
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Moet er in verband met VCA extra op de veiligheid worden gelet?</label>
+                        <select name="vca_veiligheid" id="vca_veiligheid" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee">Nee</option>
+                        </select>
+                        <input type="text" name="vca_veiligheid_omdat" id="vca_veiligheid_omdat" class="form-input mt-1 hidden-field" placeholder="Ja, omdat:">
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Waar kan het SpeeTeam vanaf 07:00 uur in de ochtend parkeren? (meerdere mogelijk)</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="parkeren_oprit" value="oprit"> Oprit (klant dient eventuele buren in te lichten over stof)</label>
+                            <label><input type="checkbox" name="parkeren_straat" value="straat"> Straat parkeren (klant dient 2 plekken achter elkaar vrij te houden)</label>
+                            <label><input type="checkbox" name="parkeren_binnenstad" value="binnenstad"> Parkeren in binnensteden (klant moet vergunningen aanvragen of parkeerplekken reserveren)</label>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Is het mogelijk om de materialen één werkdag vóór de installatie te leveren?</label>
+                        <select id="levering_materialen" name="levering_materialen" class="form-select">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee_dag_installatie">Nee, op de dag van installatie</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Is er speciaal transport nodig? (in overleg met logistiek)</label>
+                        <select name="speciaal_transport" id="speciaal_transport" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee">Nee</option>
+                        </select>
+                        <input type="text" name="speciaal_transport_details" id="speciaal_transport_details" class="form-input mt-1 hidden-field" placeholder="Ja, specificatie:">
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Is er na het locatiebezoek nog extra informatie van de klant nodig?</label>
+                        <select id="extra_informatie_klant" name="extra_informatie_klant" class="form-select">
+                            <option value="">Kies een optie</option>
+                            <option value="nee">Nee</option>
+                            <option value="ja_2e_bezoek">Ja, 2e locatiebezoek</option>
+                            <option value="ja_controlebezoek">Ja, controlebezoek</option>
+                            <option value="ja_belafspraak">Ja, belafspraak nodig</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Zijn de installatievoorwaarden, het begrip aanneemsom en het opstookprotocol (SpeeTile) besproken en akkoord bevonden?</label>
+                        <select id="voorwaarden_akkoord" name="voorwaarden_akkoord" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee">Nee</option>
+                        </select>
+                        <textarea name="voorwaarden_akkoord_opmerking" id="voorwaarden_akkoord_opmerking" rows="2" class="form-textarea mt-1 hidden-field" placeholder="Opmerking (indien nee)"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Is de klant bekend met onze verplaatsings- en annuleringskosten?</label>
+                         <select id="kosten_bekend" name="kosten_bekend" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee">Nee</option>
+                        </select>
+                        <textarea name="kosten_bekend_opmerking" id="kosten_bekend_opmerking" rows="2" class="form-textarea mt-1 hidden-field" placeholder="Opmerking (indien nee)"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Is het bij de klant bekend dat een bevoegd persoon bij aanvang van de werkzaamheden en oplevering van het systeem aanwezig moet zijn?</label>
+                        <select id="bevoegd_persoon_aanwezig" name="bevoegd_persoon_aanwezig" class="form-select form-select-small">
+                            <option value="">Kies een optie</option>
+                            <option value="ja">Ja</option>
+                            <option value="nee">Nee</option>
+                        </select>
+                        <textarea name="bevoegd_persoon_aanwezig_opmerking" id="bevoegd_persoon_aanwezig_opmerking" rows="2" class="form-textarea mt-1 hidden-field" placeholder="Opmerking (indien nee)"></textarea>
+                    </div>
+                </section>
+    
+                <section id="page5" class="mb-10">
+                    <h3 class="section-title">Voorbereiding en Akkoord</h3>
+                    <div class="input-group">
+                        <label class="form-label">Samenvatting voorbereiding voor de klant:</label>
+                        <p class="text-xs text-gray-500 mb-2">(De klant dient zelf de voorbereidingen te treffen)</p>
+                        <div>
+                            <label for="voorbereiding_latten" class="form-label text-sm">Latten:</label>
+                            <input type="text" id="voorbereiding_latten" name="voorbereiding_latten" class="form-input">
+                        </div>
+                        <div>
+                            <label for="voorbereiding_doorvoeren" class="form-label text-sm">Doorvoeren:</label>
+                            <input type="text" id="voorbereiding_doorvoeren" name="voorbereiding_doorvoeren" class="form-input">
+                        </div>
+                        <div>
+                            <label for="voorbereiding_afplakken" class="form-label text-sm">Afplakken:</label>
+                            <input type="text" id="voorbereiding_afplakken" name="voorbereiding_afplakken" class="form-input">
+                        </div>
+                        <div>
+                            <label for="voorbereiding_uitvlakken" class="form-label text-sm">Uitvlakken:</label>
+                            <input type="text" id="voorbereiding_uitvlakken" name="voorbereiding_uitvlakken" class="form-input">
+                        </div>
+                        <div>
+                            <label for="voorbereiding_verwijderen" class="form-label text-sm">Verwijderen:</label>
+                            <input type="text" id="voorbereiding_verwijderen" name="voorbereiding_verwijderen" class="form-input">
+                        </div>
+                    </div>
+    
+                    <div class="input-group">
+                        <label class="form-label important-text">Checklist voor jou als klant</label>
+                        <p class="text-sm text-gray-600 mb-2 important-text">Vóór aanvang en start van de installatie zullen onderstaande punten moeten zijn uitgevoerd:</p>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="checklist_klant_leeg_schoon"> De desbetreffende ruimte(s) zijn leeg, schoon en stofvrij</label>
+                            <label><input type="checkbox" name="checklist_klant_geen_tocht"> In de desbetreffende ruimte(s) is geen tocht aanwezig (SpeeTile systeem)</label>
+                            <label><input type="checkbox" name="checklist_klant_geen_zoninval"> In de desbetreffende ruimte(s) is geen zoninval aanwezig (SpeeTile systeem)</label>
+                            <label><input type="checkbox" name="checklist_klant_barrierres"> Op plaatsen waar geen vulmassa mag komen zijn barrières (latten) geplaatst van minimaal 3cm hoog (SpeeTile systeem) en afgekit (met acrylaatkit)</label>
+                            <label><input type="checkbox" name="checklist_klant_markering"> Plaatsen waar geen SpeeTube verwarmingsbuis, maar wel vulmassa moet komen zijn gemarkeerd met tape (SpeeTile)</label>
+                            <label><input type="checkbox" name="checklist_klant_vorst"> Bij vorst dient de ruimte verwarmd te worden tot een binnentemperatuur van minimaal 15°C voor de verwerking van de vulmassa (SpeeTile)</label>
+                        </div>
+                        <label for="checklist_klant_opmerkingen" class="form-label mt-4">Eventuele opmerkingen bij checklist klant:</label>
+                        <textarea id="checklist_klant_opmerkingen" name="checklist_klant_opmerkingen" rows="3" class="form-textarea"></textarea>
+                    </div>
+                    <div class="input-group mt-8">
+                        <p class="text-sm text-gray-700 important-text">Hierbij verklaren klant en ondergetekende, namens WARP Systems, dat dit formulier volledig is besproken, doorgenomen en akkoord is. De ondertekening van dit formulier geldt uitsluitend als bevestiging van bovenstaande en impliceert geen akkoord op de offerte.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                        <div>
+                            <label class="form-label">Handtekening Klant:</label>
+                            <div class="signature-pad-container border border-gray-300 rounded-md p-1">
+                                <canvas id="signatureCanvasKlant" class="signature-canvas" width="300" height="150"></canvas>
+                            </div>
+                            <div class="signature-controls mt-1">
+                                <button type="button" id="clearSignatureKlant">Wis</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label">Handtekening Technisch Adviseur:</label>
+                             <div class="signature-pad-container border border-gray-300 rounded-md p-1">
+                                <canvas id="signatureCanvasAdviseur" class="signature-canvas" width="300" height="150"></canvas>
+                            </div>
+                            <div class="signature-controls mt-1">
+                                <button type="button" id="clearSignatureAdviseur">Wis</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+    
+                <div class="mt-10 text-center no-print">
+                    <button type="button" id="saveAsPdfBtn" class="action-button">Formulier opslaan als PDF</button>
+                </div>
+            </form>
+
+            <footer class="mt-12 pt-8 border-t border-gray-300">
+                <p class="text-center text-sm" style="color: var(--form-warp-dark-gray);">SpeeTcheck 2025 V1.7 &nbsp;&nbsp;&nbsp; <a href="https://www.warp-systems.nl" target="_blank" class="hover:underline" style="color: var(--form-warp-green);">www.warp-systems.nl</a></p>
+            </footer>
+        </div> 
+        
+        <div id="statusModal" class="modal no-print"> <div class="modal-content">
+                <span class="modal-close" id="statusModalCloseBtn">&times;</span>
+                <h3 id="statusModalTitle" class="text-xl font-semibold mb-4" style="color: var(--form-warp-green);">Status</h3>
+                <div id="statusModalBody">
+                    <p id="statusModalResultText" class="text-sm text-gray-700 whitespace-pre-wrap"></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const hamburgerButton = document.querySelector('#warp-main-header .hamburger-menu button');
+        const centeredNav = document.querySelector('#warp-main-header nav.centered-nav');
+
+        if (hamburgerButton && centeredNav) {
+            hamburgerButton.addEventListener('click', () => {
+                alert("Hamburgermenu geklikt - Navigatie-toggle logica hier implementeren.");
+            });
+        }
+
+        function toggleField(selectElementId, targetElementId, showValue, isTextarea = false) {
+            const selectElement = document.getElementById(selectElementId);
+            const targetElement = document.getElementById(targetElementId);
+            if (selectElement && targetElement) {
+                const handleChange = function() {
+                    if (this.value === showValue) {
+                        targetElement.classList.remove('hidden-field');
+                        const firstInput = targetElement.querySelector('input, textarea, select');
+                        if (firstInput && firstInput.focus) { firstInput.focus(); } 
+                        else if (targetElement.focus) { targetElement.focus(); }
+                    } else {
+                        if (!targetElement.hasAttribute('data-always-show')) {
+                             targetElement.classList.add('hidden-field');
+                             if(isTextarea && targetElement.value !== undefined) targetElement.value = ''; 
+                        }
+                    }
+                };
+                selectElement.addEventListener('change', handleChange);
+                handleChange.call(selectElement); 
+            }
+        }
+        
+        function toggleFieldByCheckbox(checkboxId, targetElementId) { 
+            const checkbox = document.getElementById(checkboxId); 
+            const targetElement = document.getElementById(targetElementId);
+            if (checkbox && targetElement) {
+                const handleChange = function() {
+                    if (this.checked) {
+                        targetElement.classList.remove('hidden-field');
+                        if (targetElement.focus) targetElement.focus();
+                    } else {
+                        targetElement.classList.add('hidden-field');
+                        if (targetElement.value !== undefined) targetElement.value = ''; 
+                    }
+                };
+                checkbox.addEventListener('change', handleChange);
+                handleChange.call(checkbox);
+            }
+        }
+
+        // Pagina 1
+        toggleFieldByCheckbox('ondervloer_materiaal_isolatie_checkbox', 'ondervloer_materiaal_isolatie_details'); 
+        toggleFieldByCheckbox('ondervloer_materiaal_anders_checkbox', 'ondervloer_materiaal_anders_details'); 
+        
+        const waterBeschikbaarSelect = document.getElementById('water_beschikbaar');
+        const waterBeschikbaarDetails = document.getElementById('water_beschikbaar_details');
+        if (waterBeschikbaarSelect && waterBeschikbaarDetails) {
+            const handleWaterChange = function() {
+                if (this.value === 'ja' || this.value === 'nee') {
+                    waterBeschikbaarDetails.classList.remove('hidden-field');
+                    waterBeschikbaarDetails.placeholder = this.value === 'ja' ? 'Ja, locatie:' : 'Nee, afspraak:';
+                } else {
+                    waterBeschikbaarDetails.classList.add('hidden-field');
+                }
+            };
+            waterBeschikbaarSelect.addEventListener('change', handleWaterChange);
+            handleWaterChange.call(waterBeschikbaarSelect);
+        }
+
+        toggleField('ruimte_geisoleerd', 'ruimte_geisoleerd_details_container', 'ja');
+        toggleField('niveauverschil', 'niveauverschil_waar', 'ja');
+        
+        // Pagina 2
+        toggleField('ondervloer_glad', 'ondervloer_glad_maatregelen', 'nee');
+        toggleField('ondervloer_stabiel', 'ondervloer_stabiel_maatregelen', 'nee');
+        toggleField('muren_afgewerkt', 'muren_afgewerkt_risico', 'ja');
+        toggleField('wanden_afplakken', 'wanden_afplakken_risico', 'ja');
+        toggleField('kruipluik_aanwezig', 'kruipluik_instructie', 'ja');
+        
+        // Pagina 3
+        toggleField('zoneregeling', 'zoneregeling_aantal_zones_container', 'ja'); 
+        toggleField('wand_geschikt_verdeler', 'wand_geschikt_verdeler_instructie', 'nee');
+        toggleField('speetube_door_muur', 'speetube_door_muur_details', 'ja');
+        toggleField('klant_hangt_verdeler', 'klant_hangt_verdeler_instructie', 'ja');
+        toggleFieldByCheckbox('verdieping_anders_check', 'verdieping_installatie_anders'); 
+        toggleField('soort_woning_select', 'soort_woning_anders', 'anders_woning'); 
+
+        // Pagina 4
+        toggleField('lift_aanwezig', 'lift_aanwezig_afspraken', 'nee');
+        toggleField('hoogte_werk', 'hoogte_werk_maatregelen', 'ja');
+        toggleField('vca_veiligheid', 'vca_veiligheid_omdat', 'ja');
+        toggleField('speciaal_transport', 'speciaal_transport_details', 'ja');
+        toggleField('voorwaarden_akkoord', 'voorwaarden_akkoord_opmerking', 'nee', true);
+        toggleField('kosten_bekend', 'kosten_bekend_opmerking', 'nee', true);
+        toggleField('bevoegd_persoon_aanwezig', 'bevoegd_persoon_aanwezig_opmerking', 'nee', true);
+        
+        const statusModal = document.getElementById('statusModal');
+        const statusModalCloseBtn = document.getElementById('statusModalCloseBtn');
+        const statusModalTitle = document.getElementById('statusModalTitle');
+        const statusModalResultText = document.getElementById('statusModalResultText');
+
+        function showStatusModal(title, message, duration = null) {
+            if (!statusModal || !statusModalTitle || !statusModalResultText) return;
+            statusModalTitle.textContent = title;
+            statusModalResultText.textContent = message;
+            statusModal.style.display = 'block';
+            if (duration) {
+                setTimeout(closeStatusModal, duration);
+            }
+        }
+
+        function closeStatusModal() {
+            if (!statusModal) return;
+            statusModal.style.display = 'none';
+        }
+
+        if(statusModalCloseBtn) statusModalCloseBtn.onclick = closeStatusModal;
+        window.onclick = function(event) {
+            if (event.target == statusModal) {
+                closeStatusModal();
+            }
+        }
+        
+        const signaturePadKlantCanvas = document.getElementById('signatureCanvasKlant');
+        const signaturePadAdviseurCanvas = document.getElementById('signatureCanvasAdviseur');
+        let signaturePadKlant, signaturePadAdviseur;
+
+        function resizeCanvas(canvas) {
+            if (!canvas) return;
+            const ratio =  Math.max(window.devicePixelRatio || 1, 1);
+            const parentWidth = canvas.parentElement.clientWidth -2; 
+            canvas.width = parentWidth * ratio;
+            canvas.height = (parentWidth * 0.5) * ratio; 
+            canvas.style.width = parentWidth + "px";
+            canvas.style.height = (parentWidth * 0.5) + "px";
+            const ctx = canvas.getContext("2d");
+            if (ctx) { 
+                ctx.scale(ratio, ratio);
+            } else {
+                console.error("Failed to get 2D context for canvas:", canvas.id);
+            }
+        }
+        
+        if (signaturePadKlantCanvas) {
+            resizeCanvas(signaturePadKlantCanvas);
+            signaturePadKlant = new SignaturePad(signaturePadKlantCanvas, {
+                backgroundColor: 'rgb(255, 255, 255)',
+                penColor: 'rgb(0, 0, 0)'
+            });
+            const clearKlantBtn = document.getElementById('clearSignatureKlant');
+            if (clearKlantBtn) clearKlantBtn.addEventListener('click', () => signaturePadKlant.clear());
+        }
+
+        if (signaturePadAdviseurCanvas) {
+            resizeCanvas(signaturePadAdviseurCanvas);
+            signaturePadAdviseur = new SignaturePad(signaturePadAdviseurCanvas, {
+                backgroundColor: 'rgb(255, 255, 255)',
+                penColor: 'rgb(0, 0, 0)'
+            });
+            const clearAdviseurBtn = document.getElementById('clearSignatureAdviseur');
+            if (clearAdviseurBtn) clearAdviseurBtn.addEventListener('click', () => signaturePadAdviseur.clear());
+        }
+        
+        window.addEventListener('resize', () => {
+            if(signaturePadKlantCanvas) {
+                resizeCanvas(signaturePadKlantCanvas);
+                if (signaturePadKlant) signaturePadKlant.clear(); 
+            }
+            if(signaturePadAdviseurCanvas) {
+                resizeCanvas(signaturePadAdviseurCanvas);
+                if (signaturePadAdviseur) signaturePadAdviseur.clear();
+            }
+        });
+
+        // --- Data-Gedreven PDF Generatie met jsPDF ---
+        let jsPDFConstructor; 
+
+        // Probeer jsPDF te initialiseren op de meest gangbare manieren
+        if (window.jspdf && typeof window.jspdf.jsPDF === 'function') {
+            jsPDFConstructor = window.jspdf.jsPDF;
+            console.log("jsPDF constructor gevonden via window.jspdf.jsPDF");
+        } else if (typeof window.jsPDF === 'function') { 
+            jsPDFConstructor = window.jsPDF;
+            console.log("jsPDF constructor gevonden via window.jsPDF (directe global)");
+        } else if (window.jsPDF && typeof window.jsPDF.default === 'function') { 
+            jsPDFConstructor = window.jsPDF.default;
+            console.log("jsPDF constructor gevonden via window.jsPDF.default (ES module)");
+        } else {
+            console.error("jsPDF constructor NIET GEVONDEN. Controleer of de jsPDF bibliotheek (jspdf.umd.min.js) correct is geladen en de globale variabele (window.jspdf.jsPDF of window.jsPDF) beschikbaar maakt.");
+            console.log("Huidige status: window.jspdf =", window.jspdf, ", window.jsPDF =", window.jsPDF);
+            showStatusModal("PDF Fout", "De PDF bibliotheek (jsPDF) kon niet correct geladen worden. Controleer de console voor details.", 7000);
+        }
+
+
+        function gatherFormData() {
+            const formData = {};
+            const form = document.getElementById('speetcheckForm');
+            const getElementValue = (elementName) => {
+                const el = form.elements[elementName];
+                if (!el) return null;
+                if (el.nodeName === 'SELECT') return el.options[el.selectedIndex]?.text || null;
+                if (el.type === 'date' && el.value) {
+                    try { return new Date(el.value).toLocaleDateString('nl-NL', { year: 'numeric', month: '2-digit', day: '2-digit' }); } 
+                    catch (e) { return el.value; }
+                }
+                return el.value || null;
+            };
+            const getCheckboxGroupValue = (groupNamePrefix) => {
+                const values = [];
+                form.querySelectorAll(`input[name^="${groupNamePrefix}"]:checked`).forEach(cb => {
+                    const label = cb.parentElement.textContent.trim();
+                    values.push(label);
+                });
+                return values.length > 0 ? values.join('; ') : 'Niet geselecteerd';
+            };
+             const getConditionalDetail = (triggerElementId, detailInputId, triggerValue) => {
+                const triggerEl = document.getElementById(triggerElementId);
+                const detailEl = document.getElementById(detailInputId);
+                if (triggerEl && detailEl && detailEl.value) {
+                    if (triggerEl.type === 'checkbox' && triggerEl.checked) return detailEl.value;
+                    if (triggerEl.type === 'select-one' && triggerEl.value === triggerValue) return detailEl.value;
+                }
+                return null;
+            };
+            const getConditionalTextarea = (selectId, textareaId, conditionValue = 'nee') => {
+                const selectEl = document.getElementById(selectId);
+                const textareaEl = document.getElementById(textareaId);
+                if (selectEl && textareaEl && selectEl.value === conditionValue && textareaEl.value) {
+                    return textareaEl.value;
+                }
+                return null;
+            };
+
+            formData['Gegevens'] = {
+                'Klant Naam': getElementValue('klant_naam'), 'Klant Adres': getElementValue('klant_adres'), 'Klant Telefoon': getElementValue('klant_telefoon'),
+                'Technisch Adviseur Naam': getElementValue('adviseur_naam'), 'Technisch Adviseur Telefoon': getElementValue('adviseur_telefoon'), 'Projectnummer': getElementValue('projectnummer'),
+                'Installatiedatum': getElementValue('installatiedatum'), 'Datum locatiebezoek': getElementValue('datum_locatiebezoek'),
+            };
+            formData['Checklist WARP Systems technisch adviseur'] = {
+                'Systeem': getCheckboxGroupValue('systeem_'), 'Oppervlakte (locatie)': getCheckboxGroupValue('ondervloer_type_'),
+                'Ondervloer (materiaal)': getCheckboxGroupValue('ondervloer_materiaal_'),
+                '  Specificatie Isolatie': getConditionalDetail('ondervloer_materiaal_isolatie_checkbox', 'ondervloer_materiaal_isolatie_details', 'Isolatie'),
+                '  Specificatie Anders': getConditionalDetail('ondervloer_materiaal_anders_checkbox', 'ondervloer_materiaal_anders_details', 'Anders'),
+                'Stortservice WARP Systems': getElementValue('stortservice'),
+                'Water beschikbaar (min 1 bar)': getElementValue('water_beschikbaar'),
+                '  Details water': getConditionalDetail('water_beschikbaar', 'water_beschikbaar_details', 'ja') || getConditionalDetail('water_beschikbaar', 'water_beschikbaar_details', 'nee'),
+                'Stroom aanwezig (16A/230V)': getElementValue('stroom_aanwezig'),
+                'Ruimte(s) geïsoleerd': getElementValue('ruimte_geisoleerd'),
+                '  Geïsoleerd met': getConditionalDetail('ruimte_geisoleerd', 'ruimte_geisoleerd_met', 'ja'),
+                '  Locatie/oppervlakte isolatie': getConditionalDetail('ruimte_geisoleerd', 'ruimte_geisoleerd_locatie_opp', 'ja'),
+                '  Energielabel': getConditionalDetail('ruimte_geisoleerd', 'ruimte_geisoleerd_energielabel', 'ja'),
+                'Niveauverschil/opstap': getElementValue('niveauverschil'), '  Waar niveauverschil': getConditionalDetail('niveauverschil', 'niveauverschil_waar', 'ja'),
+                'Vloer binnen vlakheidsklasse 1 (NEN 2747)': getElementValue('vlakheidsklasse'),
+            };
+            formData['Oppervlakte Specificaties'] = {
+                'Aantal m² systeem': getElementValue('m2_systeem'), 'Aantal m² SpeeTube': getElementValue('m2_speetube'), 'Aantal m² storten': getElementValue('m2_storten'),
+            };
+            formData['Locatiebezoek (Vervolg)'] = {
+                'Woning oneffenheden (hobbels/kuilen)': getElementValue('oneffenheden'),
+                'Staat ondervloer - Lijm/gipsresten': getElementValue('staat_ondervloer_lijmresten'), 'Staat ondervloer - Vet': getElementValue('staat_ondervloer_vet'),
+                'Staat ondervloer - Klinkt hol': getElementValue('staat_ondervloer_hol'), '  Opmerkingen': getElementValue('opmerkingen_vloer_hol'),
+                'Ondervloer glad': getElementValue('ondervloer_glad'), '  Maatregelen klant (niet glad)': getConditionalDetail('ondervloer_glad', 'ondervloer_glad_maatregelen', 'nee'),
+                'Ondervloer stabiel': getElementValue('ondervloer_stabiel'), '  Maatregelen klant (niet stabiel)': getConditionalDetail('ondervloer_stabiel', 'ondervloer_stabiel_maatregelen', 'nee'),
+                'Afwerking over systeem': getElementValue('afwerking_systeem'), 'Plint verwerkt': getElementValue('plint_verwerkt'),
+                'Muren afgewerkt bij installatie (SpeeTile)': getElementValue('muren_afgewerkt'),
+                'WARP Systems wanden afplakken': getElementValue('wanden_afplakken'),
+                'Kruipluik aanwezig': getElementValue('kruipluik_aanwezig'),
+            };
+             formData['Technische Specificaties'] = {
+                'Soort primaire warmtebron': getElementValue('warmtebron'), 'Beoogde groepslengte': getElementValue('beoogde_groepslengte'),
+                'Zoneregeling van toepassing': getElementValue('zoneregeling'),
+                '  Aantal zones': getConditionalDetail('zoneregeling', 'zoneregeling_aantal_zones', 'ja'), 
+                'Aantal groepen': getElementValue('aantal_groepen'), 'Aantal aansluitingen': getElementValue('aantal_aansluitingen'),
+                'Locatie verdeler': getElementValue('verdeler_locatie'), 'Lengte verdeler (mm)': getElementValue('verdeler_lengte'),
+                'Hoogte verdeler (mm)': getElementValue('verdeler_hoogte'), 'Diepte verdeler (mm)': getElementValue('verdeler_diepte'),
+                'Wand geschikt voor verdeler': getElementValue('wand_geschikt_verdeler'),
+                'Minimale diameter primaire aansluiting': getElementValue('diameter_aansluiting'),
+                'Locatie primaire aansluitingen': getCheckboxGroupValue('locatie_primair_'),
+                'Kelderinstallatie': getElementValue('kelderinstallatie'), 'Klant stopcontact voorbereiden': getElementValue('stopcontact_voorbereiden'),
+                'SpeeTube door muur/wand': getElementValue('speetube_door_muur'),
+                '  Details doorvoer SpeeTube': getConditionalDetail('speetube_door_muur', 'speetube_door_muur_details', 'ja'),
+                'Klant hangt verdeler op': getElementValue('klant_hangt_verdeler'),
+                'Soort woning': getElementValue('soort_woning_select'), 
+                '  Specificatie soort woning': getConditionalDetail('soort_woning_select', 'soort_woning_anders', 'anders_woning'),
+                'Verdieping installatie': getCheckboxGroupValue('verdieping_'),
+                '  Specificatie verdieping': getConditionalDetail('verdieping_anders_check', 'verdieping_installatie_anders', true),
+            };
+            formData['Logistiek en Veiligheid'] = {
+                'Lift aanwezig': getElementValue('lift_aanwezig'), '  Afspraken geen lift': getConditionalDetail('lift_aanwezig', 'lift_aanwezig_afspraken', 'nee'),
+                'Werken op >1m hoogte': getElementValue('hoogte_werk'), '  Maatregelen hoogte werk': getConditionalDetail('hoogte_werk', 'hoogte_werk_maatregelen', 'ja'),
+                'Extra VCA veiligheid': getElementValue('vca_veiligheid'), '  Reden VCA': getConditionalDetail('vca_veiligheid', 'vca_veiligheid_omdat', 'ja'),
+                'Parkeren SpeeTeam': getCheckboxGroupValue('parkeren_'),
+                'Materialen leveren 1 werkdag voor installatie': getElementValue('levering_materialen'),
+                'Speciaal transport nodig': getElementValue('speciaal_transport'), '  Details speciaal transport': getConditionalDetail('speciaal_transport', 'speciaal_transport_details', 'ja'),
+                'Extra info nodig na locatiebezoek': getElementValue('extra_informatie_klant'),
+                'Installatievoorwaarden etc. akkoord': getElementValue('voorwaarden_akkoord'),
+                '  Opmerking voorwaarden (indien nee)': getConditionalTextarea('voorwaarden_akkoord', 'voorwaarden_akkoord_opmerking', 'nee'),
+                'Klant bekend met kosten': getElementValue('kosten_bekend'),
+                '  Opmerking kosten (indien nee)': getConditionalTextarea('kosten_bekend', 'kosten_bekend_opmerking', 'nee'),
+                'Bevoegd persoon aanwezig': getElementValue('bevoegd_persoon_aanwezig'),
+                '  Opmerking bevoegd persoon (indien nee)': getConditionalTextarea('bevoegd_persoon_aanwezig', 'bevoegd_persoon_aanwezig_opmerking', 'nee'),
+            };
+            formData['Voorbereiding en Akkoord'] = {
+                'Voorbereiding Latten': getElementValue('voorbereiding_latten'), 'Voorbereiding Doorvoeren': getElementValue('voorbereiding_doorvoeren'),
+                'Voorbereiding Afplakken': getElementValue('voorbereiding_afplakken'), 'Voorbereiding Uitvlakken': getElementValue('voorbereiding_uitvlakken'),
+                'Voorbereiding Verwijderen': getElementValue('voorbereiding_verwijderen'),
+                'Checklist - Ruimte leeg/schoon': form.elements['checklist_klant_leeg_schoon']?.checked ? 'Ja' : 'Nee',
+                'Checklist - Geen tocht': form.elements['checklist_klant_geen_tocht']?.checked ? 'Ja' : 'Nee',
+                'Checklist - Geen zoninval': form.elements['checklist_klant_geen_zoninval']?.checked ? 'Ja' : 'Nee',
+                'Checklist - Barrières': form.elements['checklist_klant_barrierres']?.checked ? 'Ja' : 'Nee',
+                'Checklist - Markering': form.elements['checklist_klant_markering']?.checked ? 'Ja' : 'Nee',
+                'Checklist - Ruimte verwarmd bij vorst': form.elements['checklist_klant_vorst']?.checked ? 'Ja' : 'Nee',
+                'Opmerkingen checklist klant': getElementValue('checklist_klant_opmerkingen'),
+            };
+            return formData;
+        }
+
+        async function saveDataDrivenPdf() {
+            console.log("PDF generatie gestart via saveDataDrivenPdf...");
+            
+            if (typeof jsPDFConstructor !== 'function') { 
+                console.error("jsPDFConstructor is niet een functie in saveDataDrivenPdf. Waarde:", jsPDFConstructor);
+                showStatusModal("PDF Fout", "PDF Bibliotheek (jsPDF) kon niet correct geïnitialiseerd worden (check in saveDataDrivenPdf).", 7000);
+                return;
+            }
+
+            const doc = new jsPDFConstructor({ // Gebruik de opgeslagen constructor
+                orientation: "p",
+                unit: "mm",
+                format: "a4"
+            }); 
+            const formData = gatherFormData();
+
+            let currentY = 20; 
+            const pageHeight = doc.internal.pageSize.height;
+            const pageWidth = doc.internal.pageSize.width;
+            const margin = 15;
+            const lineHeight = 6; 
+            const fieldIndent = 3;
+            const valueIndent = 60; 
+            const sectionSpacing = 8;
+            const itemSpacing = 4; 
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10); 
+
+            const addText = (text, x, y, options = {}) => {
+                if (y > pageHeight - margin - 5) { 
+                    doc.addPage();
+                    currentY = margin;
+                    y = currentY;
+                }
+                doc.text(text, x, y, options);
+                return y; 
+            };
+            
+            const addLine = (x1, y1, x2, y2) => {
+                 if (y1 > pageHeight - margin || y2 > pageHeight - margin) {
+                    doc.addPage();
+                    currentY = margin;
+                    y1 = currentY; 
+                    y2 = currentY;
+                }
+                doc.setDrawColor(200, 200, 200); 
+                doc.line(x1,y1,x2,y2);
+                doc.setDrawColor(0,0,0); 
+            };
+
+            doc.setFontSize(16);
+            doc.setFont('helvetica', 'bold');
+            currentY = addText('SpeeTcheck Locatiebezoek', pageWidth / 2, currentY, { align: 'center' });
+            currentY += lineHeight * 1.5;
+
+            for (const sectionTitle in formData) {
+                if (currentY > pageHeight - margin - 20) { 
+                    doc.addPage(); currentY = margin;
+                }
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'bold');
+                currentY = addText(sectionTitle, margin, currentY);
+                currentY += lineHeight * 0.5;
+                addLine(margin, currentY, pageWidth - margin, currentY);
+                currentY += lineHeight;
+
+                const sectionData = formData[sectionTitle];
+                for (const label in sectionData) {
+                    const value = sectionData[label];
+                    if (value !== null && value !== undefined && value.toString().trim() !== '' && value.toString().trim() !== 'Niet geselecteerd') {
+                        if (currentY > pageHeight - margin - lineHeight * 2) { 
+                             doc.addPage(); currentY = margin;
+                        }
+                        doc.setFontSize(9);
+                        doc.setFont('helvetica', 'bold');
+                        currentY = addText(label + ":", margin + fieldIndent, currentY);
+                        
+                        doc.setFont('helvetica', 'normal');
+                        const splitValue = doc.splitTextToSize(value.toString(), pageWidth - margin - valueIndent - fieldIndent);
+                        currentY = addText(splitValue, margin + valueIndent, currentY); 
+                        currentY += itemSpacing + (splitValue.length > 1 ? (splitValue.length -1) * (lineHeight * 0.6) : 0) ; 
+                    }
+                }
+                currentY += sectionSpacing;
+            }
+
+            currentY += lineHeight;
+            if (currentY > pageHeight - margin - 70) { 
+                doc.addPage(); currentY = margin;
+            }
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'bold');
+            currentY = addText("Handtekeningen:", margin, currentY);
+            currentY += lineHeight;
+            doc.setFontSize(9);
+
+            currentY = addText(`Handtekening Klant:`, margin + fieldIndent, currentY);
+            currentY += lineHeight * 0.5;
+            if (signaturePadKlant && !signaturePadKlant.isEmpty()) {
+                const klantSigDataUrl = signaturePadKlant.toDataURL('image/png');
+                try {
+                    const canvasWidthKlant = signaturePadKlantCanvas.offsetWidth || 60; 
+                    const imgWidthKlant = (canvasWidthKlant / 96) * 25.4 * 0.8; 
+                    const imgHeightKlant = imgWidthKlant * 0.5; 
+                    if (currentY + imgHeightKlant > pageHeight - margin) { doc.addPage(); currentY = margin; }
+                    doc.addImage(klantSigDataUrl, 'PNG', margin + fieldIndent, currentY, imgWidthKlant, imgHeightKlant);
+                    currentY += imgHeightKlant + 3; 
+                } catch (e) { currentY = addText("(fout bij laden handtekening)", margin + fieldIndent, currentY); currentY += lineHeight; }
+            } else { currentY = addText("(niet gezet)", margin + fieldIndent, currentY); currentY += lineHeight; }
+            
+            currentY += lineHeight * 0.5;
+             if (currentY > pageHeight - margin - 35) { doc.addPage(); currentY = margin; }
+
+            currentY = addText(`Handtekening Technisch Adviseur:`, margin + fieldIndent, currentY);
+            currentY += lineHeight * 0.5;
+            if (signaturePadAdviseur && !signaturePadAdviseur.isEmpty()) {
+                const adviseurSigDataUrl = signaturePadAdviseur.toDataURL('image/png');
+                 try {
+                    const canvasWidthAdviseur = signaturePadAdviseurCanvas.offsetWidth || 60;
+                    const imgWidthAdviseur = (canvasWidthAdviseur / 96) * 25.4 * 0.8;
+                    const imgHeightAdviseur = imgWidthAdviseur * 0.5;
+                     if (currentY + imgHeightAdviseur > pageHeight - margin) { doc.addPage(); currentY = margin; }
+                    doc.addImage(adviseurSigDataUrl, 'PNG', margin + fieldIndent, currentY, imgWidthAdviseur, imgHeightAdviseur);
+                    currentY += imgHeightAdviseur + 3;
+                } catch (e) { currentY = addText("(fout bij laden handtekening)", margin + fieldIndent, currentY); currentY += lineHeight; }
+            } else { currentY = addText("(niet gezet)", margin + fieldIndent, currentY); currentY += lineHeight; }
+
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(8);
+                doc.text(`Pagina ${i} van ${pageCount}`, pageWidth - margin - 2, pageHeight - 10, {align: 'right'});
+                doc.text('SpeeTcheck 2025 V1.7 - WARP Systems', margin, pageHeight - 10);
+            }
+
+            const projectNummerInput = document.getElementById('projectnummer');
+            const projectNummer = projectNummerInput ? projectNummerInput.value || "onbekend" : "onbekend";
+            const datum = new Date().toISOString().slice(0,10);
+            const filename = `SpeeTcheck_WARP_Systems_${projectNummer}_${datum}.pdf`;
+            
+            doc.save(filename);
+            showStatusModal('PDF Status', 'PDF succesvol gegenereerd met jsPDF!', 3000);
+        }
+
+        const saveAsPdfBtn = document.getElementById('saveAsPdfBtn');
+        if (saveAsPdfBtn) {
+            const newBtn = saveAsPdfBtn.cloneNode(true); 
+            saveAsPdfBtn.parentNode.replaceChild(newBtn, saveAsPdfBtn);
+            
+            newBtn.addEventListener('click', () => {
+                if (typeof jsPDFConstructor === 'function') { 
+                    saveDataDrivenPdf(); 
+                } else {
+                    showStatusModal("PDF Fout", "PDF Bibliotheek (jsPDF) is niet correct geladen. Kan PDF niet genereren.", 7000);
+                    console.error("jsPDFConstructor is not a function, PDF generation aborted. Controleer de console logs bij het laden van de pagina.");
+                }
+            });
+        }
+
+    }); 
+    </script>
+</body>
+</html>
